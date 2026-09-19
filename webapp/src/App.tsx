@@ -4,6 +4,10 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import HomePage from './pages/HomePage'
+import Map from './pages/Map'
+import Profile from './pages/Profile'
+import Settings from './pages/Settings'
 
 const router = createBrowserRouter([
   // Public only routes- if not logged in, redirects to login/register pages
@@ -17,6 +21,29 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register />
+      }
+    ]
+  },
+
+  // Protected routes
+  {
+    element: <ProtectedRoute requireAuth={true} />,
+    children: [
+      {
+        path: '/homepage',
+        element: <HomePage />
+      },
+      {
+        path: '/map',
+        element: <Map />
+      },
+      {
+        path: '/profile',
+        element: <Profile />
+      },
+      {
+        path: '/settings',
+        element: <Settings />
       }
     ]
   },
