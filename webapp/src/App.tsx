@@ -52,6 +52,12 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Navigate to='/homepage' replace />
+  },
+
+  // Catch all route
+  {
+    path: '*',
+    element: <Navigate to='/login' replace />
   }
 ])
 
