@@ -1,7 +1,9 @@
+import type { UserTypes } from "@/types/user";
+
 export const useAuth = () => {
   // temp
   const isLoading = false;
-  const user = {
+  const user: UserTypes = {
     email: 'test@gmail.com'
   }
 
