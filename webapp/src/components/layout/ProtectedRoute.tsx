@@ -1,23 +1,32 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate, Outlet } from 'react-router-dom';
 import { Spinner } from '../ui/spinner';
+import type { AuthContextType } from '@/types/auth';
 
-interface ProtextedRouteProps {
+interface ProtectedRouteProps {
   requireAuth: boolean
 }
 
-const ProtectedRoute = ({requireAuth = true}: ProtextedRouteProps) => {
-  const {user, isLoading} = useAuth();
+const ProtectedRoute = ({ requireAuth = true }: ProtectedRouteProps) => {
+  const { user, isLoading }: AuthContextType = useAuth();
 
-  if (isLoading) return <Spinner className='size-8' />
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Spinner className="size-8" />
+      </div>
+    );
+  }
 
-  // return (
-  //   <Navigate to="/login" replace />
-  // )
+  if (requireAuth && !user) {
+    return <Navigate to="/login" replace />;
+  }
 
-  return (
-    <Outlet />
-  )
-}
+  if (!requireAuth && user) {
+    return <Navigate to="/homepage" replace />;
+  }
+
+  return <Outlet />;
+};
 
 export default ProtectedRoute;

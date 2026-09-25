@@ -8,14 +8,25 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const login = (token: string, userData: UserType): void => {
+    // Temp auth login
+    setIsLoading(true)
+    console.log('login');
+    setTimeout(() => {
+      console.log("timeout done");
+      setIsLoading(false)
+    }, 5000);
     localStorage.setItem('auth_token', token);
     setUser(userData);
-  }
+  };
+
+  const googleLogin = (): void => {
+    console.log("google login");
+  };
 
   const logout = (): void => {
     localStorage.setItem('auth_token', '');
     setUser(null);
-  }
+  };
 
   useEffect(() => {
     const initialiseAuth = async () => {
@@ -41,7 +52,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{user, isLoading, login, logout}}>
+    <AuthContext.Provider value={{user, isLoading, login, googleLogin, logout}}>
       {children}
     </AuthContext.Provider>
   )

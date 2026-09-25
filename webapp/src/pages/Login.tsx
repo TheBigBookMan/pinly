@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
 import { useAuth } from "@/hooks/useAuth"
+import type { AuthContextType } from "@/types/auth"
 
 const Login = () => {
-  const {login, isLoading, googleLogin} = useAuth();
+  const {login, isLoading, googleLogin}: AuthContextType = useAuth();
+
+  const validateSubmit = () => {
+    console.log("validate");
+    console.log(isLoading);
+    login('asd', {id: '123', email: 'test@ben.com'});
+  }
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-muted px-6">
@@ -35,8 +43,8 @@ const Login = () => {
             </div>
             <Input id="password" type="password" placeholder="••••••••" required />
           </div>
-          <Button type="submit" className="w-full">
-            Sign in
+          <Button onClick={validateSubmit} type="submit" className="w-full">
+            {!isLoading ? <p>Sign in</p> : <Spinner />}
           </Button>
         </form>
 
