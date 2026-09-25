@@ -1,14 +1,7 @@
-import type { UserType } from "@/types/auth";
+import type { UserType, AuthContextType } from "@/types/auth";
 import { createContext, useEffect, useState, type ReactNode } from "react";
 
-interface AuthContextType {
-  user: UserType | null;
-  isLoading: boolean;
-  login: (token: string, userData: UserType) => void;
-  logout: () => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [user, setUser] = useState<UserType | null>(null);
@@ -28,6 +21,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     const initialiseAuth = async () => {
       try {
         const token = localStorage.getItem('auth_token');
+        console.log(token);
         if(token) {
           // api call temp
           setUser({

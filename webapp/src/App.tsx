@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage'
 import Map from './pages/Map'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
+import { AuthProvider } from './context/AuthContext'
 
 const router = createBrowserRouter([
   // Public only routes- if not logged in, redirects to login/register pages
@@ -63,7 +64,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   )
 }
 
