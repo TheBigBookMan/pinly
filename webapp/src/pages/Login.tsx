@@ -4,14 +4,18 @@ import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { useAuth } from "@/hooks/useAuth"
 import type { AuthContextType } from "@/types/auth"
+import { useState } from "react"
 
 const Login = () => {
   const {login, isLoading, googleLogin}: AuthContextType = useAuth();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
-  const validateSubmit = () => {
+  const handleSubmit = () => {
     console.log("validate");
     console.log(isLoading);
-    login('asd', {id: '123', email: 'test@ben.com'});
+    login('asd', {id: '123', email: 'test@ben.com', username: 'ben smerd'});
   }
 
   const validateGoogle = () => {
@@ -20,23 +24,29 @@ const Login = () => {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-muted px-6">
-      {/* soft accent glow behind the card */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-accent/20 blur-3xl" />
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-accent/25 blur-3xl" />
 
-      <div className="relative w-full max-w-sm rounded-xl border border-border bg-background p-8 shadow-sm">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+      <div className="relative w-full max-w-sm rounded-2xl border border-border bg-background p-8 shadow-sm">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <span className="text-lg font-semibold">P</span>
         </div>
 
         <h1 className="mt-6 text-2xl font-semibold text-foreground">Welcome back</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Sign in to your Pinly account.
+          Pick up right where you left off.
         </p>
 
-        <form className="mt-8 space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@example.com" required />
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -45,22 +55,32 @@ const Login = () => {
                 Forgot password?
               </a>
             </div>
-            <Input id="password" type="password" placeholder="••••••••" required />
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
-          <Button onClick={validateSubmit} type="submit" className="w-full">
-            {!isLoading ? <p>Sign in</p> : <Spinner />}
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
+
+          <Button type="submit" className="w-full rounded-xl">
+            Sign in
           </Button>
         </form>
 
-        <div className="mt-6 border-t border-border pt-6">
-          <Button onClick={() => validateGoogle()} variant="secondary" className="w-full">
-            Continue with Google
-          </Button>
-        </div>
+        <div className="my-6 border-t border-dashed border-border" />
+
+        <Button onClick={() => validateGoogle()} variant="secondary" className="w-full rounded-xl">
+          Continue with Google
+        </Button>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          New to Pinly?{" "}
-          <a href="/register" className="font-medium text-primary hover:underline">
+          New here?{" "}
+          <a href="/register" className="font-medium text-accent hover:underline">
             Create an account
           </a>
         </p>

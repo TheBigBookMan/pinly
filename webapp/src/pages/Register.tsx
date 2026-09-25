@@ -36,21 +36,21 @@ const Register = () => {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-muted px-6">
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-accent/20 blur-3xl" />
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-accent/25 blur-3xl" />
 
-      <div className="relative w-full max-w-sm rounded-xl border border-border bg-background p-8 shadow-sm">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+      <div className="relative w-full max-w-sm rounded-2xl border border-border bg-background p-8 shadow-sm">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <span className="text-lg font-semibold">P</span>
         </div>
 
-        <h1 className="mt-6 text-2xl font-semibold text-foreground">Create your account</h1>
+        <h1 className="mt-6 text-2xl font-semibold text-foreground">Start your map</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Start saving the places you find.
+          Save it now, find it later.
         </p>
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <Label htmlFor="name">Username</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
               id="name"
               type="text"
@@ -96,20 +96,20 @@ const Register = () => {
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full rounded-xl">
             Create account
           </Button>
         </form>
 
-        <div className="mt-6 border-t border-border pt-6">
-          <Button variant="secondary" className="w-full">
-            Continue with Google
-          </Button>
-        </div>
+        <div className="my-6 border-t border-dashed border-border" />
+
+        <Button variant="secondary" className="w-full rounded-xl">
+          Continue with Google
+        </Button>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <a href="/login" className="font-medium text-primary hover:underline">
+          <a href="/login" className="font-medium text-accent hover:underline">
             Sign in
           </a>
         </p>
