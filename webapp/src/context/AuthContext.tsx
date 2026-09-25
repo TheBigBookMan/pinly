@@ -10,9 +10,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const login = (token: string, userData: UserType): void => {
     // Temp auth login
     setIsLoading(true)
-    console.log('login');
     setTimeout(() => {
-      console.log("timeout done");
       setIsLoading(false)
     }, 5000);
     localStorage.setItem('auth_token', token);
@@ -22,6 +20,21 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const googleLogin = (): void => {
     console.log("google login");
   };
+
+  const register = (username: string, email: string, password: string): boolean => {
+    // temp for dev
+    console.log("register");
+
+    const userData = {
+      id: '123',
+      username: 'ben s',
+      email: 'ben@test'
+    }
+    const token = '12'
+    localStorage.setItem('auth_token', token);
+    setUser(userData);
+    return true;
+  }
 
   const logout = (): void => {
     localStorage.setItem('auth_token', '');
@@ -37,7 +50,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
           // api call temp
           setUser({
             id: '1234',
-            email: 'test@gmail.com'
+            email: 'test@gmail.com',
+            username: 'bensmerd'
           })
         }
       } catch (err) {
@@ -52,7 +66,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{user, isLoading, login, googleLogin, logout}}>
+    <AuthContext.Provider value={{user, isLoading, login, googleLogin, register, logout}}>
       {children}
     </AuthContext.Provider>
   )

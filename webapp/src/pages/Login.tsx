@@ -14,6 +14,10 @@ const Login = () => {
     login('asd', {id: '123', email: 'test@ben.com'});
   }
 
+  const validateGoogle = () => {
+    googleLogin();
+  }
+
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-muted px-6">
       {/* soft accent glow behind the card */}
@@ -49,14 +53,14 @@ const Login = () => {
         </form>
 
         <div className="mt-6 border-t border-border pt-6">
-          <Button variant="secondary" className="w-full">
+          <Button onClick={() => validateGoogle()} variant="secondary" className="w-full">
             Continue with Google
           </Button>
         </div>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           New to Pinly?{" "}
-          <a href="#" className="font-medium text-primary hover:underline">
+          <a href="/register" className="font-medium text-primary hover:underline">
             Create an account
           </a>
         </p>
