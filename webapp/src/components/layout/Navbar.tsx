@@ -9,6 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { useAuth } from "@/hooks/useAuth"
+import type { AuthContextType } from "@/types/auth"
 
 const navItems: {label: string, to: string, icon: LucideIcon}[] = [
   { label: "Home", to: "/homepage", icon: Home },
@@ -18,7 +20,16 @@ const navItems: {label: string, to: string, icon: LucideIcon}[] = [
 ]
 
 const Navbar = () => {
-  const [open, setOpen] = useState<boolean>(false)
+  const {logout}: AuthContextType = useAuth();
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleLogout = () => {
+    const confirmation = confirm("Are you sure you want to logout?");
+
+    if (!confirmation) return;
+
+    logout();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
@@ -51,7 +62,10 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden md:block">
-          <Button variant="secondary" size="sm" className="rounded-full">
+          <Button onClick={handleLogout} variant="secondary" size="sm" className="rounded-full cursor-pointer">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
+              <LogOut className="size-4" />
+            </span>
             Sign out
           </Button>
         </div>
@@ -114,7 +128,7 @@ const Navbar = () => {
             <div className="mx-6 border-t border-dashed border-border" />
 
             <div className="px-4 py-5">
-              <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+              <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
                   <LogOut className="size-4" />
                 </span>
