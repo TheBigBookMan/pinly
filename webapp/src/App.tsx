@@ -9,57 +9,32 @@ import Map from './pages/Map'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 import { AuthProvider } from './context/AuthContext'
+import Layout from './components/layout/Layout'
 
 const router = createBrowserRouter([
-  // Public only routes- if not logged in, redirects to login/register pages
   {
     element: <ProtectedRoute requireAuth={false} />,
     children: [
-      {
-        path: '/login', 
-        element: <Login /> 
-      },
-      {
-        path: '/register',
-        element: <Register />
-      }
+      { path: '/login', element: <Login /> },
+      { path: '/register', element: <Register /> }
     ]
   },
-
-  // Protected routes
   {
     element: <ProtectedRoute requireAuth={true} />,
     children: [
       {
-        path: '/homepage',
-        element: <HomePage />
-      },
-      {
-        path: '/map',
-        element: <Map />
-      },
-      {
-        path: '/profile',
-        element: <Profile />
-      },
-      {
-        path: '/settings',
-        element: <Settings />
+        element: <Layout />,
+        children: [
+          { path: '/homepage', element: <HomePage /> },
+          { path: '/map', element: <Map /> },
+          { path: '/profile', element: <Profile /> },
+          { path: '/settings', element: <Settings /> }
+        ]
       }
     ]
   },
-
-  // Root route
-  {
-    path: '/',
-    element: <Navigate to='/homepage' replace />
-  },
-
-  // Catch all route
-  {
-    path: '*',
-    element: <Navigate to='/login' replace />
-  }
+  { path: '/', element: <Navigate to='/homepage' replace /> },
+  { path: '*', element: <Navigate to='/login' replace /> }
 ])
 
 function App() {
