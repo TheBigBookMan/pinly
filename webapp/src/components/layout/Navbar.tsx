@@ -73,7 +73,7 @@ const Navbar = () => {
                 <span className="text-lg font-semibold">Pinly</span>
               </SheetTitle>
               <p className="pl-11 text-sm text-muted-foreground">
-                Where to next? ✈️
+                Where to next?
               </p>
             </SheetHeader>
 
