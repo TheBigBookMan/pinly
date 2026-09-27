@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import './App.css'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import Login from './pages/Login'
