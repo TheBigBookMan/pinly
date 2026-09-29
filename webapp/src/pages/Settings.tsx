@@ -128,13 +128,13 @@ const Settings = () => {
 	}
 
 	return (
-		<div className="mx-auto max-w-2xl px-6 py-8">
+		<div className="mx-auto flex h-full max-w-2xl flex-col px-6 py-8">
 			<h1 className="text-2xl font-semibold text-foreground">Settings</h1>
 			<p className="mt-1 text-sm text-muted-foreground">
 				Manage how Pinly behaves for you.
 			</p>
 
-			<div className="flex flex-col gap-4 mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
+			<div className="mt-8 flex flex-1 flex-col gap-4 overflow-y-auto rounded-2xl border border-border bg-secondary/40 p-6">
 				{settingsData.map((setting) => {
 					if (setting.hidden) return null
 					return (
