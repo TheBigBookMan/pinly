@@ -9,6 +9,7 @@ import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 import { AuthProvider } from './context/AuthContext'
 import Layout from './components/layout/Layout'
+import Pins from './pages/Pins'
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,8 @@ const router = createBrowserRouter([
           { path: '/homepage', element: <HomePage /> },
           { path: '/map', element: <Map /> },
           { path: '/profile', element: <Profile /> },
-          { path: '/settings', element: <Settings /> }
+          { path: '/settings', element: <Settings /> },
+          { path: '/pins', element: <Pins /> },
         ]
       }
     ]
