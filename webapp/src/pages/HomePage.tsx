@@ -17,7 +17,7 @@ const HomePage = () => {
 
       <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-4 px-6">
         <h1 className="text-center text-2xl font-semibold text-foreground">
-          Where are you headed?
+          What caught your eye?
         </h1>
         <div className='flex gap-2 items-center text-muted-foreground'>
           <h2>
