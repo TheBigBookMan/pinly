@@ -33,3 +33,8 @@ type TextSettingType = BaseSetting & {
 }
 
 export type SettingsType = SwitchSettingType | NumberSettingType | TextSettingType;
+
+export type SettingsRowProps = {
+  setting: SettingsType & { value: string | number | boolean }
+  onChange: (settingId: SettingsId, value: string | number | boolean) => void
+}
