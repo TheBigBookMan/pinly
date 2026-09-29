@@ -3,6 +3,7 @@ import { settings } from "@/utils/settings"
 import type { SettingsId, SettingsRowProps } from "@/types/settings"
 import { Button } from "@/components/ui/button"
 import SettingsRow from "@/components/features/Settings/SettingsRow";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 type UserSettingType = {
 	settingId: SettingsId
@@ -51,12 +52,7 @@ const Settings = () => {
 	const handleSave = async () => {
 		setIsSaving(true)
 		try {
-			// await fetch("/api/settings", {
-			//   method: "PATCH",
-			//   body: JSON.stringify(
-			//     settingsData.map(({ settingId, value }) => ({ settingId, value }))
-			//   ),
-			// })
+			// await fetch("/api/settings", { ... })
 			setInitialSettings(settingsData)
 		} finally {
 			setIsSaving(false)
@@ -70,26 +66,35 @@ const Settings = () => {
 				Manage how Pinly behaves for you.
 			</p>
 
-			<div className="mt-8 flex flex-1 flex-col gap-4 overflow-y-auto rounded-2xl border border-border bg-secondary/40 p-6">
-				{settingsData.map((setting) => {
-					if (setting.hidden) return null
-					return (
-						<SettingsRow
-							key={setting.settingId}
-							setting={setting}
-							onChange={handleChange}
-						/>
-					)
-				})}
-			</div>
+			<Card className="mt-8 flex flex-1 flex-col overflow-hidden">
+				<CardHeader>
+					<CardTitle>Preferences</CardTitle>
+					<CardDescription>
+						Changes here apply the next time you save a pin.
+					</CardDescription>
+				</CardHeader>
 
-			<div className="mt-6 flex justify-end">
-				<Button onClick={handleSave} disabled={!hasChanges || isSaving}>
-					{isSaving ? "Saving..." : "Save changes"}
-				</Button>
-			</div>
+				<CardContent className="flex flex-1 flex-col gap-4 overflow-y-auto">
+					{settingsData.map((setting) => {
+						if (setting.hidden) return null
+						return (
+							<SettingsRow
+								key={setting.settingId}
+								setting={setting}
+								onChange={handleChange}
+							/>
+						)
+					})}
+				</CardContent>
+
+				<CardFooter className="justify-end border-t">
+					<Button onClick={handleSave} disabled={!hasChanges || isSaving}>
+						{isSaving ? "Saving..." : "Save changes"}
+					</Button>
+				</CardFooter>
+			</Card>
 		</div>
 	)
 }
 
-export default Settings
+export default Settings;
