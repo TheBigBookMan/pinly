@@ -139,7 +139,6 @@ const Account = () => {
 					<Input
 						id="email"
 						type="email"
-						className="w-48"
 						disabled={!isEdit}
 						value={draft.email}
 						onChange={(e) => handleFieldChange("email", e.target.value)}
@@ -152,7 +151,6 @@ const Account = () => {
 					<Input
 						id="username"
 						type="text"
-						className="w-48"
 						disabled={!isEdit}
 						value={draft.username}
 						onChange={(e) => handleFieldChange("username", e.target.value)}
@@ -165,7 +163,6 @@ const Account = () => {
 					<Input
 						id="home-country"
 						type="text"
-						className="w-48"
 						disabled={!isEdit}
 						value={draft.homeCountry}
 						onChange={(e) => handleFieldChange("homeCountry", e.target.value)}
@@ -177,7 +174,6 @@ const Account = () => {
 					<Label htmlFor="bio">Bio</Label>
 					<Textarea
 						id="bio"
-						className="w-48"
 						disabled={!isEdit}
 						value={draft.bio}
 						onChange={(e) => handleFieldChange("bio", e.target.value)}
