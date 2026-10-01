@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
-import { Menu, Home, MapPin, User, Settings, LogOut, type LucideIcon } from "lucide-react"
+import { Menu, Home, MapPin, Map, User, Settings, LogOut, type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -14,7 +14,8 @@ import type { AuthContextType } from "@/types/auth"
 
 const navItems: {label: string, to: string, icon: LucideIcon}[] = [
   { label: "Home", to: "/homepage", icon: Home },
-  { label: "Map", to: "/map", icon: MapPin },
+  { label: "Map", to: "/map", icon: Map },
+  { label: "Pins", to: "/pins", icon: MapPin },
   { label: "Profile", to: "/profile", icon: User },
   { label: "Settings", to: "/settings", icon: Settings },
 ]

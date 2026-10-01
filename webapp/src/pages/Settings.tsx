@@ -1,72 +1,9 @@
 import { useState } from "react"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Input } from "@/components/ui/input"
 import { settings } from "@/utils/settings"
-import type { SettingsId, SettingsType } from "@/types/settings"
+import type { SettingsId, SettingsRowProps } from "@/types/settings"
 import { Button } from "@/components/ui/button"
-
-type SettingsRowProps = {
-	setting: SettingsType & { value: string | number | boolean }
-	onChange: (settingId: SettingsId, value: string | number | boolean) => void
-}
-
-const SettingsRow = ({ setting, onChange }: SettingsRowProps) => {
-	const checkSettingType = () => {
-		switch (setting.type) {
-			case 'switch':
-				return (
-					<Switch
-						id={setting.settingId}
-						checked={setting.value as boolean}
-						onCheckedChange={(checked) => onChange(setting.settingId, checked)}
-					/>
-				)
-
-			case 'number':
-				return (
-					<div className="flex items-center gap-2">
-						<Input
-							type="number"
-							min={setting.min}
-							max={setting.max}
-							value={setting.value as number}
-							onChange={(e) => onChange(setting.settingId, Number(e.target.value))}
-							className="w-20 text-right"
-						/>
-						{setting.unit && (
-							<span className="text-sm text-muted-foreground">{setting.unit}</span>
-						)}
-					</div>
-				)
-
-			case 'text':
-				return (
-					<Input
-						type="text"
-						value={setting.value as string}
-						onChange={(e) => onChange(setting.settingId, e.target.value)}
-						className="w-48"
-					/>
-				)
-		}
-	}
-
-	return (
-		<div className="flex items-start justify-between gap-4">
-			<div className="space-y-1">
-				<Label htmlFor={setting.settingId} className="text-sm font-medium text-foreground">
-					{setting.label}
-				</Label>
-				<p className="text-sm text-muted-foreground">
-					{setting.description}
-				</p>
-			</div>
-
-			{checkSettingType()}
-		</div>
-	)
-}
+import SettingsRow from "@/components/features/Settings/SettingsRow";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 type UserSettingType = {
 	settingId: SettingsId
@@ -115,12 +52,7 @@ const Settings = () => {
 	const handleSave = async () => {
 		setIsSaving(true)
 		try {
-			// await fetch("/api/settings", {
-			//   method: "PATCH",
-			//   body: JSON.stringify(
-			//     settingsData.map(({ settingId, value }) => ({ settingId, value }))
-			//   ),
-			// })
+			// await fetch("/api/settings", { ... })
 			setInitialSettings(settingsData)
 		} finally {
 			setIsSaving(false)
@@ -134,26 +66,35 @@ const Settings = () => {
 				Manage how Pinly behaves for you.
 			</p>
 
-			<div className="mt-8 flex flex-1 flex-col gap-4 overflow-y-auto rounded-2xl border border-border bg-secondary/40 p-6">
-				{settingsData.map((setting) => {
-					if (setting.hidden) return null
-					return (
-						<SettingsRow
-							key={setting.settingId}
-							setting={setting}
-							onChange={handleChange}
-						/>
-					)
-				})}
-			</div>
+			<Card className="mt-8 flex flex-1 flex-col overflow-hidden">
+				<CardHeader>
+					<CardTitle>Preferences</CardTitle>
+					<CardDescription>
+						Changes here apply the next time you save a pin.
+					</CardDescription>
+				</CardHeader>
 
-			<div className="mt-6 flex justify-end">
-				<Button onClick={handleSave} disabled={!hasChanges || isSaving}>
-					{isSaving ? "Saving..." : "Save changes"}
-				</Button>
-			</div>
+				<CardContent className="flex flex-1 flex-col gap-4 overflow-y-auto">
+					{settingsData.map((setting) => {
+						if (setting.hidden) return null
+						return (
+							<SettingsRow
+								key={setting.settingId}
+								setting={setting}
+								onChange={handleChange}
+							/>
+						)
+					})}
+				</CardContent>
+
+				<CardFooter className="justify-end border-t">
+					<Button onClick={handleSave} disabled={!hasChanges || isSaving}>
+						{isSaving ? "Saving..." : "Save changes"}
+					</Button>
+				</CardFooter>
+			</Card>
 		</div>
 	)
 }
 
-export default Settings
+export default Settings;
