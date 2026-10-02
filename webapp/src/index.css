@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "tailwind-scrollbar";
 
 @custom-variant dark (&:is(.dark *));
 @custom-variant data-open (&[data-state="open"]);
@@ -21,6 +22,8 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -51,6 +54,9 @@
   --border: 222 12% 70%;
   --input: 222 12% 70%;
   --ring: 217 91% 60%;
+
+  --popover: 222 12% 14%;
+  --popover-foreground: 210 40% 98%;
 }
 
 .dark {
@@ -75,6 +81,9 @@
   --border: 222 12% 18%;
   --input: 222 12% 18%;
   --ring: 217 91% 60%;
+
+  --popover: 222 12% 14%;
+  --popover-foreground: 210 40% 98%;
 }
 
 * {
@@ -84,4 +93,14 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-20px); }
 }
