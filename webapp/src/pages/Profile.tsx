@@ -3,7 +3,7 @@ import Travel from "@/components/features/Profile/Travel"
 
 const Profile = () => {
   return (
-    <div className="mx-auto w-full max-w-2xl px-6 py-8">
+    <div className="mx-auto w-full max-w-2xl px-6 py-4">
       <h1 className="text-2xl font-semibold text-foreground">Profile</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         Personalise Pinly for you.

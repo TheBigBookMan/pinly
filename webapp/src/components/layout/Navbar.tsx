@@ -33,43 +33,40 @@ const Navbar = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
         <NavLink to="/homepage" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <span className="text-sm font-semibold">P</span>
+          <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <span className="text-xs font-semibold">P</span>
           </div>
-          <span className="text-lg font-semibold text-foreground">Pinly</span>
+          <span className="text-sm font-semibold tracking-tight text-foreground">Pinly</span>
         </NavLink>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 rounded-full border border-border bg-muted/50 p-1 md:flex">
-          {navItems.map(({ label, to, icon: Icon }) => (
+        <nav className="hidden items-center gap-1 md:flex">
+          {navItems.map(({ label, to }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                `rounded-md px-3 py-1.5 text-[13px] transition-colors ${
                   isActive
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-muted text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`
               }
             >
-              <Icon className="size-4" />
               {label}
             </NavLink>
           ))}
         </nav>
 
         <div className="hidden md:block">
-          <Button onClick={handleLogout} variant="secondary" size="sm" className="rounded-full cursor-pointer">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
-              <LogOut className="size-4" />
-            </span>
+          <Button variant="ghost" size="sm" className="cursor-pointer text-[13px] text-muted-foreground">
             Sign out
           </Button>
         </div>
+
+    {/* Sheet stays as is */}
 
         {/* Mobile hamburger */}
         <Sheet open={open} onOpenChange={setOpen}>

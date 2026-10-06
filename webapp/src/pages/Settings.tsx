@@ -60,7 +60,7 @@ const Settings = () => {
 	}
 
 	return (
-		<div className="mx-auto flex h-full max-w-2xl flex-col px-6 py-8">
+		<div className="mx-auto flex h-full max-w-2xl flex-col px-6 py-4">
 			<h1 className="text-2xl font-semibold text-foreground">Settings</h1>
 			<p className="mt-1 text-sm text-muted-foreground">
 				Manage how Pinly behaves for you.
