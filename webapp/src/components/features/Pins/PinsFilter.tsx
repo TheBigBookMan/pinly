@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Slider } from "@/components/ui/slider"
 import { MapPin, Check, X } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export type FilterMode = "distance" | "countries" | null
 
@@ -30,12 +31,13 @@ type PinsFiltersProps = {
   onFiltersChange: (filters: FilterState) => void
   filterMode: FilterMode
   onFilterModeChange: (mode: FilterMode) => void
+  className?: string
 }
 
 // Dummy — would come from the backend, derived from which countries the user has pins in
 const availableCountries = ["Thailand", "Vietnam", "Portugal", "Germany", "Spain", "Laos"]
 
-export default function PinsFilters({ filters, onFiltersChange, filterMode, onFilterModeChange }: PinsFiltersProps) {
+export default function PinsFilters({ filters, onFiltersChange, filterMode, onFilterModeChange, className }: PinsFiltersProps) {
   const [distanceDialogOpen, setDistanceDialogOpen] = useState(false)
   const [countryDialogOpen, setCountryDialogOpen] = useState(false)
   const [draftDistance, setDraftDistance] = useState(filters.distanceKm)
@@ -69,7 +71,7 @@ export default function PinsFilters({ filters, onFiltersChange, filterMode, onFi
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 my-4">
+    <div className={cn("flex flex-wrap items-center gap-2", className)}>
       <Select
         value={filters.status}
         onValueChange={(value: FilterState["status"]) =>
