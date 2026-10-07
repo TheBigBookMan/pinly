@@ -21,6 +21,7 @@ import { Play } from "lucide-react"
 import type { Pin } from "@/types/pins"
 import type { Category } from "@/types/category"
 import { dummyPins } from "@/data/pins"
+import EditPinDialog, { type PinEditChanges } from "@/components/shared/EditPinDialog"
 
 const formatPinnedDate = (iso: string) => {
   const date = new Date(iso)
@@ -110,11 +111,8 @@ export default function PinsList({ categories, filters, filterMode, selectedCate
     setEditNote(pin.note ?? "")
   }
 
-  const handleEditSave = () => {
-    if (!editingPin) return
-    setPins((prev) =>
-      prev.map((pin) => (pin.id === editingPin.id ? { ...pin, name: editName, note: editNote } : pin))
-    )
+  const handleEditSave = (id: string, changes: PinEditChanges) => {
+    setPins((prev) => prev.map((p) => (p.id === id ? { ...p, ...changes } : p)))
     setEditingPin(null)
   }
 
@@ -256,27 +254,7 @@ export default function PinsList({ categories, filters, filterMode, selectedCate
         </p>
       )}
 
-      <Dialog open={!!editingPin} onOpenChange={(open) => !open && setEditingPin(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit pin</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="pin-name">Name</Label>
-              <Input id="pin-name" value={editName} onChange={(e) => setEditName(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pin-note">Note</Label>
-              <Textarea id="pin-note" value={editNote} onChange={(e) => setEditNote(e.target.value)} placeholder="What made this place worth saving?" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="secondary" className="cursor-pointer" onClick={() => setEditingPin(null)}>Cancel</Button>
-            <Button className="cursor-pointer" onClick={handleEditSave}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EditPinDialog pin={editingPin} onClose={() => setEditingPin(null)} onSave={handleEditSave} categories={categories} />
 
       <ConfirmDialog
         open={!!deleteTargetId}

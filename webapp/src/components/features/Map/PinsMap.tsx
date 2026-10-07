@@ -3,12 +3,14 @@ import { MapContainer, Marker, Popup, TileLayer, ZoomControl, useMap } from "rea
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import "@/styles/leaflet-overrides.css"
-import { LocateFixed, Navigation, Play, Star } from "lucide-react"
 import VideoModal from "@/components/shared/VideoModal"
 import { platformLabel } from "@/utils/embed"
 import { formatPinnedDate, openInMaps } from "@/utils/pins"
 import type { Pin } from "@/types/pins"
 import type { Category } from "@/types/category"
+import { Navigation, Pencil, Play, LocateFixed, Star } from "lucide-react"
+import EditPinDialog, { type PinEditChanges } from "@/components/shared/EditPinDialog"
+
 
 // Category emojis are user-entered, and they end up in an HTML string below, so escape them.
 const escapeHtml = (value: string) =>
@@ -74,7 +76,8 @@ function MapController({
   return null
 }
 
-function PinPopup({ pin, category, onPlay }: { pin: Pin; category?: Category; onPlay: () => void }) {
+function PinPopup({ pin, category, onPlay, onEdit }: { pin: Pin; category?: Category; onPlay: () => void; onEdit: () => void }) {
+  const map = useMap()
   const isDone = pin.status === "done"
 
   // Divs and buttons only: Leaflet's own CSS overrides <p> margins and <a> colors inside the map.
@@ -143,13 +146,27 @@ function PinPopup({ pin, category, onPlay }: { pin: Pin; category?: Category; on
           <span className="text-[11px] text-muted-foreground/70">
             Pinned {formatPinnedDate(pin.pinnedAt)}
           </span>
-          <button
-            onClick={() => openInMaps(pin)}
-            className="flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
-          >
-            <Navigation className="size-3.5" />
-            Directions
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              title="Edit pin"
+              aria-label="Edit pin"
+              onClick={() => {
+                map.closePopup()
+                onEdit()
+              }}
+              className="flex size-7 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+            >
+              <Pencil className="size-3.5" />
+            </button>
+            <button
+              title="Directions"
+              aria-label="Directions"
+              onClick={() => openInMaps(pin)}
+              className="flex size-7 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+            >
+              <Navigation className="size-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -159,9 +176,12 @@ function PinPopup({ pin, category, onPlay }: { pin: Pin; category?: Category; on
 type PinsMapProps = {
   pins: Pin[]
   categories: Category[]
+  onEditPin: (id: string, changes: PinEditChanges) => void
 }
 
-export default function PinsMap({ pins, categories }: PinsMapProps) {
+export default function PinsMap({ pins, categories, onEditPin }: PinsMapProps) {
+  const [editingPinId, setEditingPinId] = useState<string | null>(null)
+  const editingPin = pins.find((p) => p.id === editingPinId) ?? null
   const [userPos, setUserPos] = useState<[number, number] | null>(null)
   const [geoStatus, setGeoStatus] = useState<GeoStatus>("loading")
   const [videoPinId, setVideoPinId] = useState<string | null>(null)
@@ -226,7 +246,7 @@ export default function PinsMap({ pins, categories }: PinsMapProps) {
               icon={pinIcon(category?.emoji ?? "📍", pin.status === "done")}
             >
               <Popup minWidth={240} maxWidth={240}>
-                <PinPopup pin={pin} category={category} onPlay={() => handlePlay(pin)} />
+                <PinPopup pin={pin} category={category} onPlay={() => handlePlay(pin)} onEdit={() => setEditingPinId(pin.id)} />
               </Popup>
             </Marker>
           )
@@ -259,6 +279,16 @@ export default function PinsMap({ pins, categories }: PinsMapProps) {
           url={videoPin.sourceUrl}
         />
       )}
+
+      <EditPinDialog
+        categories={categories}
+        pin={editingPin}
+        onClose={() => setEditingPinId(null)}
+        onSave={(id, changes) => {
+          onEditPin(id, changes)
+          setEditingPinId(null)
+        }}
+      />
     </>
   )
 }

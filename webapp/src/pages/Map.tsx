@@ -14,10 +14,11 @@ import CategoryFilterChips from "@/components/features/Pins/CategoryFilterChips"
 import PinsMap from "@/components/features/Map/PinsMap"
 import { dummyCategories, dummyPins } from "@/data/pins"
 import { filterPins } from "@/utils/pins"
+import { type PinEditChanges } from "@/components/shared/EditPinDialog"
 
 const Map = () => {
   const categories = dummyCategories
-  const pins = dummyPins
+  const [pins, setPins] = useState(dummyPins)
 
   const [filters, setFilters] = useState<FilterState>({
     status: "all",
@@ -27,6 +28,9 @@ const Map = () => {
   const [filterMode, setFilterMode] = useState<FilterMode>(null)
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
   const [sheetOpen, setSheetOpen] = useState(false)
+
+  const handleEditPin = (id: string, changes: PinEditChanges) =>
+  setPins((prev) => prev.map((p) => (p.id === id ? { ...p, ...changes } : p)))
 
   const toggleCategory = (id: string) =>
     setSelectedCategoryIds((prev) =>
@@ -64,7 +68,7 @@ const Map = () => {
 
       {/* `isolate` keeps Leaflet's high internal z-indexes from covering the navbar, sheets and dialogs */}
       <div className="relative isolate min-h-[420px] flex-1">
-        <PinsMap pins={visiblePins} categories={categories} />
+        <PinsMap pins={visiblePins} categories={categories} onEditPin={handleEditPin} />
 
         {/* Mobile: filters in a side sheet */}
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
