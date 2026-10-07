@@ -17,40 +17,11 @@ import { ExternalLink, Navigation, Pencil, Trash2, Check, Star } from "lucide-re
 import type { FilterState } from "./PinsFilter"
 import VideoModal from "@/components/shared/VideoModal"
 import { platformLabel, type SourcePlatform } from "@/utils/embed"
-import { Play } from "lucide-react" // add Play to your existing lucide import
-
-type Category = {
-  id: string
-  name: string
-  emoji: string
-}
-
-export type Pin = {
-  id: string
-  name: string
-  categoryId: string
-  country: string
-  distanceKm: number
-  lat: number
-  lng: number
-  status: "want_to_see" | "done"
-  sourceUrl?: string
-  rating?: number
-  note?: string
-  pinnedAt: string
-  sourcePlatform?: SourcePlatform
-  thumbnailUrl?: string
-}
-
-const dummyPins: Pin[] = [
-  { id: "1", name: "Sunset Rooftop", categoryId: "1", country: "Thailand", distanceKm: 3, lat: 18.7883, lng: 98.9853, status: "want_to_see",  pinnedAt: "2026-09-12", sourceUrl: "https://www.tiktok.com/@example/video/7000000000000000000",
-sourcePlatform: "tiktok",
-thumbnailUrl: "https://picsum.photos/seed/rooftop/600/450", },
-  { id: "2", name: "Nong Khiaw Viewpoint", categoryId: "3", country: "Laos", distanceKm: 420, lat: 20.1667, lng: 102.7, status: "done", rating: 5, note: "Best sunrise of the whole trip.", pinnedAt: "2026-08-02", sourceUrl: "https://www.instagram.com/reel/EXAMPLE123/",
-sourcePlatform: "instagram", },
-  { id: "3", name: "Doi Suthep Trail", categoryId: "2", country: "Thailand", distanceKm: 12, lat: 18.8048, lng: 98.9217, status: "want_to_see", sourceUrl: "https://instagram.com/reel/example", pinnedAt: "2026-09-20" },
-  { id: "4", name: "Pasteis de Belem", categoryId: "4", country: "Portugal", distanceKm: 9500, lat: 38.6975, lng: -9.2033, status: "done", rating: 4, pinnedAt: "2026-07-15" },
-]
+import { Play } from "lucide-react"
+import type { Pin } from "@/types/pins"
+import type { Category } from "@/types/category"
+import { dummyPins } from "@/data/pins"
+import EditPinDialog, { type PinEditChanges } from "@/components/shared/EditPinDialog"
 
 const formatPinnedDate = (iso: string) => {
   const date = new Date(iso)
@@ -140,11 +111,8 @@ export default function PinsList({ categories, filters, filterMode, selectedCate
     setEditNote(pin.note ?? "")
   }
 
-  const handleEditSave = () => {
-    if (!editingPin) return
-    setPins((prev) =>
-      prev.map((pin) => (pin.id === editingPin.id ? { ...pin, name: editName, note: editNote } : pin))
-    )
+  const handleEditSave = (id: string, changes: PinEditChanges) => {
+    setPins((prev) => prev.map((p) => (p.id === id ? { ...p, ...changes } : p)))
     setEditingPin(null)
   }
 
@@ -286,27 +254,7 @@ export default function PinsList({ categories, filters, filterMode, selectedCate
         </p>
       )}
 
-      <Dialog open={!!editingPin} onOpenChange={(open) => !open && setEditingPin(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit pin</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="pin-name">Name</Label>
-              <Input id="pin-name" value={editName} onChange={(e) => setEditName(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pin-note">Note</Label>
-              <Textarea id="pin-note" value={editNote} onChange={(e) => setEditNote(e.target.value)} placeholder="What made this place worth saving?" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="secondary" className="cursor-pointer" onClick={() => setEditingPin(null)}>Cancel</Button>
-            <Button className="cursor-pointer" onClick={handleEditSave}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EditPinDialog pin={editingPin} onClose={() => setEditingPin(null)} onSave={handleEditSave} categories={categories} />
 
       <ConfirmDialog
         open={!!deleteTargetId}

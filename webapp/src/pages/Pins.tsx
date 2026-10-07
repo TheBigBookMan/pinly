@@ -19,14 +19,8 @@ import EditCategoriesDialog from "@/components/features/Pins/EditCategoriesDialo
 import type { Category } from "@/types/category"
 import PinsFilters, { type FilterMode, type FilterState } from "@/components/features/Pins/PinsFilter"
 import PinsList from "@/components/features/Pins/PinsList"
+import { dummyCategories } from "@/data/pins"
 
-const dummyCategories: Category[] = [
-  { id: "1", name: "Barssss", emoji: "🍺" },
-  { id: "2", name: "Hiking", emoji: "🥾" },
-  { id: "3", name: "Viewpoint", emoji: "🌄" },
-  { id: "4", name: "Food", emoji: "🍜" },
-  { id: "5", name: "Beach", emoji: "🏖️" },
-]
 
 const Pins = () => {
   const [categories, setCategories] = useState<Category[]>(dummyCategories)
