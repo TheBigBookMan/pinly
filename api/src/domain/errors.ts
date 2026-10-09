@@ -21,3 +21,9 @@ export class NotFoundError extends DomainError {
 }
 
 export class ConflictError extends DomainError {}
+
+export class UnauthorizedError extends DomainError {
+  constructor(code = "unauthenticated", message = 'Sign in required.') {
+    super(code, message);
+  }
+}
