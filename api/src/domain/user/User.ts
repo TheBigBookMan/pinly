@@ -11,3 +11,8 @@ export interface NewUser {
   username: string,
   passwordHash: string
 }
+
+export interface UserCredentials {
+  user: User;
+  passwordHash: string | null;
+}
