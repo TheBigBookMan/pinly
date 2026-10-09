@@ -2,8 +2,6 @@ import { PasswordHasher } from "@/application/ports/PasswordHasher";
 import { UserRepository } from "@/application/ports/UserRepository";
 import { assertValidPassword, assertValidUsername, normalizeEmail, normalizePassword } from "@/domain/user/credentials";
 
-
-
 export class RegisterUser {
   constructor(
     private readonly users: UserRepository,
