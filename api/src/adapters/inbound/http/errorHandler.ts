@@ -1,4 +1,4 @@
-import { ConflictError, DomainError, NotFoundError } from "@/domain/errors";
+import { ConflictError, DomainError, NotFoundError, UnauthorizedError } from "@/domain/errors";
 import { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
 
@@ -15,7 +15,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   }
 
   if (err instanceof DomainError) {
-    const status = err instanceof ConflictError ? 409 : err instanceof NotFoundError ? 404 : 400;
+    const status = err instanceof UnauthorizedError ? 401 : err instanceof ConflictError ? 409 : err instanceof NotFoundError ? 404 : 400;
     res.status(status).json({error: {code: err.code, message: err.message}});
     return;
   }

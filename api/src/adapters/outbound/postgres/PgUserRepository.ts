@@ -1,6 +1,6 @@
 import { UserRepository } from "@/application/ports/UserRepository";
 import { ConflictError } from "@/domain/errors";
-import { NewUser, User } from "@/domain/user/User";
+import { NewUser, User, UserCredentials } from "@/domain/user/User";
 import pg from "pg";
 
 export class PgUserRepository implements UserRepository {
@@ -36,5 +36,29 @@ export class PgUserRepository implements UserRepository {
     } finally {
       client.release();
     }
+  }
+
+  async findCredentialsByEmail(email: string): Promise<UserCredentials | null> {
+    const result = await this.pool.query<{id: string; email: string; username: string; password_hash: string | null}>(
+      `SELECT u.id, u.email, u.password_hash, p.username
+      FROM users u JOIN profile p ON p.user_id = u.id
+      WHERE u.email = $1`,
+      [email]
+    );
+    const row = result.rows[0];
+    if(!row) return null;
+
+    return {user: new User(row.id, row.email, row.username), passwordHash: row.password_hash};
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const result = await this.pool.query<{id: string; email: string; username: string}>(
+      `SELECT u.id, u.email, p.username
+      FROM users u JOIN profile p ON p.user_id = u.id
+      WHERE u.id = $1`,
+      [id]
+    );
+    const row = result.rows[0];
+    return row ? new User(row.id, row.email, row.username) : null;
   }
 }
