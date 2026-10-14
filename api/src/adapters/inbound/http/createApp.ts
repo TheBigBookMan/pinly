@@ -11,17 +11,23 @@ import { LoginWithPassword } from "@/application/use-cases/auth/LoginWithPasswor
 import { RefreshSession } from "@/application/use-cases/auth/RefreshSession";
 import { Logout } from "@/application/use-cases/auth/Logout";
 import cookieParser from "cookie-parser";
+import type { TokenService } from "@/application/ports/TokenService";
+import type { GetCurrentUser } from "@/application/use-cases/auth/GetCurrentUser";
+import { makeRequireAuth } from "./requireAuth";
 
 type Deps = {
   checkDb: () => Promise<void>;
+  tokens: TokenService;
   registerUser: RegisterUser;
   loginWithPassword: LoginWithPassword;
   refreshSession: RefreshSession;
   logout: Logout;
+  getCurrentUser: GetCurrentUser;
 }
 
 export function createApp(deps: Deps) {
   const app = express();
+  const requireAuth = makeRequireAuth(deps.tokens);
 
   app.use(pinoHttp({ logger, redact: ["req.headers.authorization", "req.headers.cookie", "res.headers['set-cookie']"] }));
   app.use(helmet());
@@ -34,7 +40,9 @@ export function createApp(deps: Deps) {
     res.json({ status: "ok" });
   });
 
-  app.use("/api/auth", authRouter(deps));
+  app.use("/api/auth", authRouter({...deps, requireAuth}));
+
+  app.use("/api", requireAuth);
 
   app.use((_req, res) => {
     res.status(404).json({ error: { code: "not_found", message: "Not found" } });

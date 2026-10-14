@@ -11,6 +11,7 @@ import { SessionService } from "./application/services/SessionService"
 import { LoginWithPassword } from "./application/use-cases/auth/LoginWithPassword"
 import { RefreshSession } from "./application/use-cases/auth/RefreshSession"
 import { Logout } from "./application/use-cases/auth/Logout"
+import { GetCurrentUser } from "./application/use-cases/auth/GetCurrentUser"
 
 const pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: 10 });
 
@@ -27,7 +28,9 @@ const app = createApp({
   registerUser: new RegisterUser(userRepository, hasher),
   loginWithPassword: new LoginWithPassword(userRepository, hasher, sessions),
   refreshSession: new RefreshSession(userRepository, refreshTokenRepository, tokens, sessions),
-  logout: new Logout(refreshTokenRepository, tokens)
+  logout: new Logout(refreshTokenRepository, tokens),
+  tokens,
+  getCurrentUser: new GetCurrentUser(userRepository)
 })
 
 const server = app.listen(env.PORT, () => {

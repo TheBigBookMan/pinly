@@ -4,10 +4,12 @@ import { Logout } from "@/application/use-cases/auth/Logout";
 import { RefreshSession } from "@/application/use-cases/auth/RefreshSession";
 import { RegisterUser } from "@/application/use-cases/auth/RegisterUser";
 import { User } from "@/domain/user/User";
-import { Response, Router } from "express";
+import { RequestHandler, Response, Router } from "express";
 import z from "zod";
 import { clearRefreshCookie, readRefreshCookie, setFreshCookie } from "./refreshCookie";
 import { UnauthorizedError } from "@/domain/errors";
+import type { GetCurrentUser } from "@/application/use-cases/auth/GetCurrentUser";
+import { currentUserId } from "./requireAuth";
 
 const email = z.string().trim().email().max(254);
 
@@ -19,6 +21,8 @@ type Deps = {
   loginWithPassword: LoginWithPassword;
   refreshSession: RefreshSession;
   logout: Logout;
+  getCurrentUser: GetCurrentUser;
+  requireAuth: RequestHandler;
 };
 
 const toDto = (user: User | undefined) => ({id: user?.id, email: user?.email, username: user?.username});
@@ -67,6 +71,10 @@ export function authRouter(deps: Deps) {
     clearRefreshCookie(res);
     res.status(204).end();
   });
+
+  router.get("/me", deps.requireAuth, async (_req, res) => {
+    res.json({user: toDto(await deps.getCurrentUser.execute(currentUserId(res)))});
+  })
 
   return router;
 }
