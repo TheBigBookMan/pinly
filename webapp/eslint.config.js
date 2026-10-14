@@ -9,6 +9,14 @@ export default defineConfig([
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],
+    rules: {
+      "no-restricted-imports": ["error", {
+        patterns: [{
+          group: ["@/features/*", "@/pages/*", "@/components/*"],
+          message: "lib must not depend on features, pages or components.",
+        }]
+      }]
+    },
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,

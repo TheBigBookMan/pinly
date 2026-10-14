@@ -2,24 +2,24 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
+import { useLogin } from "@/features/auth/hooks"
 import { useAuth } from "@/hooks/useAuth"
+import { messageOf } from "@/lib/api"
 import type { AuthContextType } from "@/types/auth"
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 
 const Login = () => {
-  const {login, isLoading, googleLogin}: AuthContextType = useAuth();
+  const login = useLogin();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = () => {
-    console.log("validate");
-    console.log(isLoading);
-    login('asd', {id: '123', email: 'test@ben.com', username: 'ben smerd'});
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    login.mutate({email, password});
   }
 
   const validateGoogle = () => {
-    googleLogin();
+    console.log("GOOGLE");
   }
 
   return (
@@ -65,10 +65,10 @@ const Login = () => {
             />
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {login.isError && <p className="text-sm text-destructive">{messageOf(login.error)}</p>}
 
-          <Button type="submit" className="w-full rounded-xl">
-            Sign in
+          <Button type="submit" className="w-full rounded-xl" disabled={login.isPending}>
+            {login.isPending ? "Signing in..." : "Sign in"}
           </Button>
         </form>
 
