@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Spinner } from "@/components/ui/spinner"
 import { useLogin } from "@/features/auth/hooks"
-import { useAuth } from "@/hooks/useAuth"
 import { messageOf } from "@/lib/api"
-import type { AuthContextType } from "@/types/auth"
 import { useState, type FormEvent } from "react"
 
 const Login = () => {

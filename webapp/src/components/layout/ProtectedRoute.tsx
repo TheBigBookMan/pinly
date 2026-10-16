@@ -1,4 +1,3 @@
-import { useAuth } from '@/hooks/useAuth';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { Spinner } from '../ui/spinner';
 import type { AuthContextType } from '@/types/auth';

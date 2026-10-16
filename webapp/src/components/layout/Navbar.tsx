@@ -9,8 +9,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { useAuth } from "@/hooks/useAuth"
-import type { AuthContextType } from "@/types/auth"
 import { useLogout } from "@/features/auth/hooks"
 
 const navItems: {label: string, to: string, icon: LucideIcon}[] = [
