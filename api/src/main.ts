@@ -12,6 +12,8 @@ import { LoginWithPassword } from "./application/use-cases/auth/LoginWithPasswor
 import { RefreshSession } from "./application/use-cases/auth/RefreshSession"
 import { Logout } from "./application/use-cases/auth/Logout"
 import { GetCurrentUser } from "./application/use-cases/auth/GetCurrentUser"
+import { PinoSecurityEvents } from "./adapters/outbound/logging/PinoSecurityEvents"
+import { PwnedPasswordsChecker } from "./adapters/outbound/security/PwnedPasswordsChecker"
 
 const pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: 10 });
 
@@ -20,14 +22,16 @@ const refreshTokenRepository = new PgRefreshTokenRepository(pool);
 const hasher = new Argon2PasswordHasher();
 const tokens = new JwtTokenService(env.JWT_ACCESS_SECRET);
 const sessions = new SessionService(tokens, refreshTokenRepository, env.REFRESH_TOKEN_TTL_DAYS);
+const events = new PinoSecurityEvents();
+const breachedPasswords = new PwnedPasswordsChecker();
 
 const app = createApp({
   checkDb: async () => {
     await pool.query("SELECT 1")
   },
-  registerUser: new RegisterUser(userRepository, hasher),
+  registerUser: new RegisterUser(userRepository, hasher, breachedPasswords),
   loginWithPassword: new LoginWithPassword(userRepository, hasher, sessions),
-  refreshSession: new RefreshSession(userRepository, refreshTokenRepository, tokens, sessions),
+  refreshSession: new RefreshSession(userRepository, refreshTokenRepository, tokens, sessions, events),
   logout: new Logout(refreshTokenRepository, tokens),
   tokens,
   getCurrentUser: new GetCurrentUser(userRepository)

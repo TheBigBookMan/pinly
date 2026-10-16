@@ -10,6 +10,8 @@ import { clearRefreshCookie, readRefreshCookie, setFreshCookie } from "./refresh
 import { UnauthorizedError } from "@/domain/errors";
 import type { GetCurrentUser } from "@/application/use-cases/auth/GetCurrentUser";
 import { currentUserId } from "./requireAuth";
+import { requireTrustedOrigin } from "./requireTrustedOrigin";
+import { loginAccountLimiter, loginIpLimiter, refreshLimiter, registerLimiter } from "./rateLimits";
 
 const email = z.string().trim().email().max(254);
 
@@ -30,10 +32,7 @@ const toDto = (user: User | undefined) => ({id: user?.id, email: user?.email, us
 export function authRouter(deps: Deps) {
   const router = Router();
 
-  router.use((_req, res, next) => {
-    res.setHeader("Cache-Control", "no-store");
-    next();
-  });
+  router.use(requireTrustedOrigin);
 
   const signedIn = (res: Response, result: {user: User; session: Session}) => {
     setFreshCookie(res, result.session.refreshToken, result.session.refreshTokenExpiresAt);
@@ -44,16 +43,16 @@ export function authRouter(deps: Deps) {
     })
   }
 
-  router.post("/register", async (req, res) => {
+  router.post("/register", registerLimiter, async (req, res) => {
     const user = await deps.registerUser.execute(registerBody.parse(req.body));
     res.status(201).json({user: toDto(user)});
   })
 
-  router.post("/login", async (req, res) => {
+  router.post("/login", loginIpLimiter, loginAccountLimiter, async (req, res) => {
     signedIn(res, await deps.loginWithPassword.execute(loginBody.parse(req.body)));
   })
 
-  router.post("/refresh", async (req, res) => {
+  router.post("/refresh", refreshLimiter, async (req, res) => {
     const card = readRefreshCookie(req);
     if (!card) throw new UnauthorizedError("session_invalid", "No active session.");
 

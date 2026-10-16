@@ -1,4 +1,5 @@
 import { RefreshTokenRepository } from "@/application/ports/RefreshTokenRepository";
+import { SecurityEvents } from "@/application/ports/SecurityEvents";
 import { TokenService } from "@/application/ports/TokenService";
 import { UserRepository } from "@/application/ports/UserRepository";
 import { SessionService } from "@/application/services/SessionService";
@@ -11,13 +12,15 @@ export class RefreshSession {
     private readonly users: UserRepository,
     private readonly refreshTokens: RefreshTokenRepository,
     private readonly tokens: TokenService,
-    private readonly sessions: SessionService
+    private readonly sessions: SessionService,
+    private readonly events: SecurityEvents
   ) {}
 
   async execute(rawCard: string) {
     const result = await this.refreshTokens.consume(this.tokens.hashRefreshToken(rawCard));
 
     if (result.status === 'reused') {
+      this.events.refreshTokenReused(result.familyId);
       await this.refreshTokens.revokeFamily(result.familyId);
       throw ended();
     }
