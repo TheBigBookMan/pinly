@@ -7,9 +7,13 @@ import HomePage from './pages/HomePage'
 import Map from './pages/Map'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
-import { AuthProvider } from './context/AuthContext'
 import Layout from './components/layout/Layout'
 import Pins from './pages/Pins'
+import { listenForSessionEnd } from './features/auth/session'
+import { queryClient } from './lib/queryClient'
+import { QueryClientProvider } from '@tanstack/react-query'
+
+listenForSessionEnd(queryClient);
 
 const router = createBrowserRouter([
   {
@@ -40,9 +44,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <AuthProvider>
+    <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-    </AuthProvider>
+    </QueryClientProvider>
   )
 }
 

@@ -1,38 +1,39 @@
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAuth } from "@/hooks/useAuth"
+import { useRegister } from "@/features/auth/hooks"
+import { ApiError, messageOf } from "@/lib/api"
 
 const Register = () => {
-  const { register } = useAuth()
-  const navigate = useNavigate()
+  const register = useRegister();
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [mismatch, setMismatch] = useState<boolean | string>(false);
 
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setError(null)
 
     if (password !== confirmPassword) {
-      setError("Passwords don't match.")
-      return
+      setMismatch("Passwords don't match.");
+      return;
     }
 
-    try {
-      // await your API call to create the account, get token + userData back
-      // login(token, userData)
-      register(username, email, password)
-      navigate("/homepage")
-    } catch (err) {
-      setError("Couldn't create your account. Try again.")
-    }
+    setMismatch(false);
+    register.mutate({email, username, password});
   }
+
+  const error = register.error;
+  const emailError = error instanceof ApiError && error.code === "email_taken" ? error.message : undefined;
+  const usernameError = error instanceof ApiError && error.code === "username_ taken" ? error.message : undefined;
+  const generalError = mismatch 
+    ? "Passwords don't match."
+    : register.isError && !emailError && !usernameError
+      ? messageOf(error)
+      : null;
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-muted px-6">
@@ -50,15 +51,20 @@ const Register = () => {
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
-              id="name"
+              id="username"
               type="text"
               placeholder="Jane Doe"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              minLength={3}
+              maxLength={30}
+              aria-invalid={!!usernameError}
+              aria-describedby={usernameError ? "username-error" : undefined}
             />
+            {usernameError && <p id="username-error" role="alert" className="text-sm text-destructive">{usernameError}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -69,7 +75,10 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-invalid={!!emailError}
+              aria-describedby={emailError ? "email-error" : undefined}
             />
+            {emailError && <p id="email-error" role="alert" className="text-sm text-destructive">{emailError}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
@@ -80,7 +89,10 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={12}
+              aria-describedby="password-hint"
             />
+            <p id="password-hint" className="text-xs text-muted-foreground">At least 12 characters. A phrase works well.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm password</Label>
@@ -92,12 +104,11 @@ const Register = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
+            {generalError && <p role="alert" className="text-sm text-destructive">{generalError}</p>}
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
-
-          <Button type="submit" className="w-full rounded-xl">
-            Create account
+          <Button type="submit" className="w-full rounded-xl" disabled={register.isPending}>
+            {register.isPending ? "Creating account..." : "Create account"}
           </Button>
         </form>
 
