@@ -1,14 +1,27 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { googleSignInUrl } from "@/features/auth/google"
 import { useLogin } from "@/features/auth/hooks"
 import { messageOf } from "@/lib/api"
 import { useState, type FormEvent } from "react"
+import { useLocation, useSearchParams } from "react-router-dom"
+
+const OAUTH_MESSAGES: Record<string, string> = {
+  account_exists: "An account with that email already exists. Sign in with your password instead.",
+  email_not_verified: "Google has not verified that email address, so we cannot use it.",
+  oauth_cancelled: "Google sign-in was cancelled.",
+  oauth_failed: "Google sign-in did not complete. Please try again."
+};
 
 const Login = () => {
   const login = useLogin();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [params] = useSearchParams();
+  const code = params.get("error");
+  const oauthError = code && Object.hasOwn(OAUTH_MESSAGES, code) ? OAUTH_MESSAGES[code] : null;
+  const from = (useLocation().state);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -71,8 +84,10 @@ const Login = () => {
 
         <div className="my-6 border-t border-dashed border-border" />
 
-        <Button onClick={() => validateGoogle()} variant="secondary" className="w-full rounded-xl">
-          Continue with Google
+        {oauthError && <p role="alert" className="text-sm text-destructive">{oauthError}</p>}
+
+        <Button asChild variant="secondary" className="w-full rounded-xl">
+          <a href={googleSignInUrl(from)}>Continue with Google</a>
         </Button>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">

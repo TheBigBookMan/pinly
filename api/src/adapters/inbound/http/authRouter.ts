@@ -6,7 +6,7 @@ import { RegisterUser } from "@/application/use-cases/auth/RegisterUser";
 import { User } from "@/domain/user/User";
 import { RequestHandler, Response, Router } from "express";
 import z from "zod";
-import { clearRefreshCookie, readRefreshCookie, setFreshCookie } from "./refreshCookie";
+import { clearRefreshCookie, readRefreshCookie, setRefreshCookie } from "./refreshCookie";
 import { UnauthorizedError } from "@/domain/errors";
 import type { GetCurrentUser } from "@/application/use-cases/auth/GetCurrentUser";
 import { currentUserId } from "./requireAuth";
@@ -35,7 +35,7 @@ export function authRouter(deps: Deps) {
   router.use(requireTrustedOrigin);
 
   const signedIn = (res: Response, result: {user: User; session: Session}) => {
-    setFreshCookie(res, result.session.refreshToken, result.session.refreshTokenExpiresAt);
+    setRefreshCookie(res, result.session.refreshToken, result.session.refreshTokenExpiresAt);
     res.json({
       accessToken: result.session.accessToken,
       expiresIn: result.session.accessTokenExpiresIn,

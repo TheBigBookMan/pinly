@@ -2,6 +2,8 @@ import type { AuthResponse } from "@/types/auth";
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
+export const apiUrl = (path: string) => `${BASE_URL}/api${path}`;
+
 type Init = Omit<RequestInit, "headers" | "credentials">
 export class ApiError extends Error {
   constructor(

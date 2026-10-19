@@ -10,7 +10,7 @@ const options = {
   path: "/api/auth"
 };
 
-export const setFreshCookie = (res: Response, card: string, expiresAt: Date) => {
+export const setRefreshCookie = (res: Response, card: string, expiresAt: Date) => {
   res.cookie(NAME, card, {...options, expires: expiresAt});
 }
 

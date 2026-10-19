@@ -26,3 +26,5 @@ export const loginAccountLimiter = rateLimit({
 
 export const registerLimiter = rateLimit({...base, windowMs: 60 * 60_000, limit: 5});
 export const refreshLimiter = rateLimit({...base, windowMs: 15 * 60_000, limit: 60});
+
+export const oauthLimiter = rateLimit({ ...base, windowMs: 15 * 60_000, limit: 30 });
